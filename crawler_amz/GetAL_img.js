@@ -1,10 +1,13 @@
 const puppeteer = require("puppeteer");
 const request = require("request");
-const CronJob = require("cron").CronJob;
 const fs = require("fs");
+const args = require("minimist")(process.argv.slice(2));
 
-const foldersearch = process.argv.slice(2).join("-");
-const filesearch = "1.json";
+const arguments = process.argv.slice(2).join(" ").split("--search")[1];
+let search = arguments.split(" ").slice(1).join("-");
+const foldersearch = search;
+const filesearch = args.page + ".json";
+console.log(foldersearch + " and " + filesearch);
 const affilantejson = "AL-" + foldersearch + ".json";
 
 const UserAgent =
@@ -130,7 +133,6 @@ function compare(data, url) {
     resolve(true);
   });
 }
-
 async function getListNextLink(pathSearch, fileAffilate, nblink) {
   const Jsonsearchlink = fs.readFileSync(pathSearch);
   const Jsonaffiliatelink = fs.readFileSync(fileAffilate);
@@ -192,9 +194,14 @@ async function main() {
       Filecookie,
       Dimention
     );
-    for (const ntlink of nextlinks) {
-      await LaunchAnalyse(ntlink, affilantejson, page, browser);
+    try {
+      for (const ntlink of nextlinks) {
+        await LaunchAnalyse(ntlink, affilantejson, page, browser);
+      }
+    } catch (error) {
+      console.log("change page !!! " + error);
     }
+
     await updateCookie(page, Filecookie);
     await browser.close();
   } else {

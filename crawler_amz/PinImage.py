@@ -1,6 +1,7 @@
 # coding: utf-8
 import os, json
 import argparse
+import unicodedata
 from selenium import webdriver
 from time import sleep
 from selenium.webdriver.common.action_chains import ActionChains
@@ -66,6 +67,37 @@ def pin_image(browser, title_img, description_img, link_img, path_img):
     actions.move_by_offset(31, 413).double_click().perform()
     sleep(1)
 
+def pin_image_subtable(browser, title_img, description_img, link_img, path_img):
+    # got to the link table
+    print(title_img,description_img,link_img,path_img)
+    browser.get(link_pinterest)
+    sleep(2)  # time for charge the page
+    # Action
+    connect_btn = browser.find_elements_by_xpath(
+        '//*[@id="__PWS_ROOT__"]/div[1]/div[3]/div/div/div/div/div[1]/div/div[1]/div/div/div/div/div/div/div/div/div[1]/div[1]/div/button')
+    click_element(connect_btn)  # click on the add element +
+    sleep(2)
+    browser.find_element_by_id("media-upload-input").send_keys(path_img)
+    sleep(1)
+    title_text = browser.find_element_by_xpath(
+        '//*[@id="__PWS_ROOT__"]/div[1]/div[3]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div[1]/div[1]/div/div/div[1]/textarea')
+    title_text.send_keys(title_img)
+    sleep(0.5)
+    description_text = browser.find_element_by_xpath(
+        '//*[@id="__PWS_ROOT__"]/div[1]/div[3]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div[1]/div[3]/div/div[1]/textarea')
+    description_text.send_keys(description_img)
+    sleep(0.5)
+    link_text = browser.find_element_by_xpath(
+        '//*[@id="__PWS_ROOT__"]/div[1]/div[3]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div[2]/div/div[1]/textarea')
+    link_text.send_keys(link_img)
+    browser.find_element_by_xpath('//*[@id="__PWS_ROOT__"]/div[1]/div[3]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div[1]/div/div[2]/div/div/div/button[2]').click()
+    # wait publication
+    sleep(4)
+    actions = ActionChains(browser)
+    actions.move_to_element_with_offset(browser.find_element_by_tag_name('body'), 0, 0)
+    actions.move_by_offset(31, 413).double_click().perform()
+    sleep(1)
+
 def write_json(data, filename='data.json'):
     with open(filename, 'w') as f:
         json.dump(data, f, indent=4)
@@ -81,6 +113,11 @@ def removeImg(repertoire):
     for i in range(0,len(files)):
         os.remove(repertoire+'/'+files[i])
 
+def filterchar(text):
+    test = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore')
+    return test.decode('ascii')
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--cookiepin", help="increase output verbosity")
@@ -93,8 +130,13 @@ if __name__ == "__main__":
         jsonlistlink = args.aljson #"affilateLink.json"
         tableau = args.tablepin #"fan-naruto"
         link_pinterest = "https://www.pinterest.fr/la_petite_boutade/" + tableau + "/"
-        filepin = "pin-" + tableau + ".json"
         dicopin = {}
+        if "/" in tableau:
+            filepin = "pin-" + tableau.split("/")[1] +".json"
+            print(filepin)
+        else:
+            filepin = "pin-" + tableau + ".json"
+            
         if os.path.isfile(filepin):
             dicopin = load_json(filepin)
         if os.path.isfile(jsonlistlink) != True:
@@ -115,15 +157,20 @@ if __name__ == "__main__":
                 data = json.load(f)
             for i in range(0, len(data)):
                 name_img = data[i]['imagename']
-                title_img = data[i]['title']
-                description_img = data[i]['title']
+                title_img = filterchar(data[i]['title'])
+                description_img = filterchar(data[i]['title'])
                 link_img = data[i]['link']
                 path_img = getcurrentpath("img", name_img)
                 if os.path.isfile(path_img):
                     if name_img not in dicopin:
-                        # Pin Image
-                        pin_image(browser, title_img, description_img, link_img, path_img)
-                        dicopin.update({name_img: title_img})
+                        # it s a subtable
+                        if "/" in tableau:
+                            pin_image_subtable(browser, title_img, description_img, link_img, path_img)
+                            dicopin.update({name_img: title_img})
+                        else:
+                            # simple Pin in table root
+                            pin_image(browser, title_img, description_img, link_img, path_img)
+                            dicopin.update({name_img: title_img})
                     else:
                         print("Already Pin: ", name_img)
             write_json(dicopin,filepin)
