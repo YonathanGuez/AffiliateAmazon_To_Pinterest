@@ -5,5 +5,14 @@
   "license": "MIT",
   "devDependencies": {
     "puppeteer": "^3.0.0"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "cookies": "^0.8.0",
+    "cron": "^1.8.2",
+    "nodemailer": "^6.4.6",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.5",
+    "tough-cookie": "^4.0.0"
   }
 }
