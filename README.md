@@ -8,7 +8,7 @@ Attention with this project you can be bannished by Pinterest !!!
 2 - Pinterest don't like bots like all social mediat 
 
 
-## 1)  Crawler Can stock Images and Info on Amazon and add All data to Pinterest
+## [1)  Crawler Can stock Images and Info on Amazon and add All data to Pinterest](https://github.com/YonathanGuez/AffiliateAmazon_To_Pinterest/tree/master/crawler_amz)
 
 - Search Automation Object on Amazon example : T-Shirt Dragon-Ball
 - Get all pictures descriptions and affiliate link
