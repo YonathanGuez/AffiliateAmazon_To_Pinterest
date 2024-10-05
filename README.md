@@ -16,11 +16,8 @@ Attention with this project you can be bannished by Pinterest !!!
 - Publish all picture and description stocked 
 
 Example In Youtube: 
-<a href="https://youtu.be/COHdWTDEkp0">
-    <p align="center">
-      <img width="246" height="150" src="[https://i9.ytimg.com/vi_webp/COHdWTDEkp0/mqdefault.webp?time=1605048900000&sqp=CMS0rP0F&rs=AOn4CLBc0ptmbaZrsJOYDUC6OQcT1rLHvA](https://youtu.be/COHdWTDEkp0?si=M30AWlpWpuulaTeT)">
-    </p>
-</a>
+   [![Video Thumbnail](https://i.ytimg.com/vi/COHdWTDEkp0/hqdefault.jpg)](https://www.youtube.com/watch?v=COHdWTDEkp0)
+
 
 ## 2) Add Extension : (not finished) 
 this Extension is not done , it was the second vision of this project
